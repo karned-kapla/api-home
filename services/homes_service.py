@@ -1,12 +1,16 @@
 from fastapi import HTTPException
-from models.home_model import HomeCreate, HomeUpdate
+from models.home_model import HomeCreate, HomeRead, HomeUpdate, HomeCreateDatabase
 from common_api.utils.v0 import get_state_repos
 
 
-def create_home(request, new_home) -> str:
+def create_home(request, new_home: HomeCreate) -> str:
     try:
         repos = get_state_repos(request)
-        new_uuid = repos.home_repo.create_home(new_home)
+
+        home_db = HomeCreateDatabase(**new_home.model_dump())
+        home_db.created_by = request.state.token_info.get('user_uuid')
+
+        new_uuid = repos.home_repo.create_home(home_db)
         if not isinstance(new_uuid, str):
             raise TypeError("The method create_home did not return a str.")
     except Exception as e:
@@ -14,7 +18,7 @@ def create_home(request, new_home) -> str:
 
     return new_uuid
 
-def get_homes(request) -> list[HomeCreate]:
+def get_homes(request) -> list[HomeRead]:
     try:
         repos = get_state_repos(request)
         homes = repos.home_repo.list_homes()
@@ -26,7 +30,7 @@ def get_homes(request) -> list[HomeCreate]:
     return homes
 
 
-def get_home(request, uuid: str) -> HomeCreate:
+def get_home(request, uuid: str) -> HomeRead:
     try:
         repos = get_state_repos(request)
         home = repos.home_repo.get_home(uuid)

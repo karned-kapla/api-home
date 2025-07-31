@@ -20,7 +20,6 @@ router = APIRouter(
 @check_permissions(['create'])
 async def create_new_home(request: Request, home: HomeCreate) -> dict:
     logger.api("POST /home/v1/")
-    home.created_by = request.state.token_info.get('user_uuid')
     new_uuid = create_home(request, home)
     return {"uuid": new_uuid}
 
@@ -33,7 +32,7 @@ async def read_homes(request: Request):
 
 
 @router.get("/{uuid}", status_code=status.HTTP_200_OK, response_model=HomeRead)
-@check_permissions(['list', 'list_own'])
+@check_permissions(['read', 'read_own'])
 async def read_home(request: Request, uuid: str):
     logger.api("GET /home/v1/{uuid}")
     home = get_home(request, uuid)
