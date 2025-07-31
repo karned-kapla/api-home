@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import List
-from models.home_model import HomeWrite
+from models.home_model import HomeCreate, HomeUpdate
+
 
 class HomeRepository(ABC):
 
     @abstractmethod
-    def create_home(self, home_create: HomeWrite):
+    def create_home(self, home_create: HomeCreate):
         pass
 
     @abstractmethod
@@ -17,7 +17,7 @@ class HomeRepository(ABC):
         pass
 
     @abstractmethod
-    def update_home(self, home_id: str, home_update: HomeWrite):
+    def update_home(self, home_id: str, home_update: HomeUpdate):
         pass
 
     @abstractmethod

@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from models.home_model import HomeWrite
+from models.home_model import HomeCreate, HomeUpdate
 from common_api.utils.v0 import get_state_repos
 
 
@@ -14,7 +14,7 @@ def create_home(request, new_home) -> str:
 
     return new_uuid
 
-def get_homes(request) -> list[HomeWrite]:
+def get_homes(request) -> list[HomeCreate]:
     try:
         repos = get_state_repos(request)
         homes = repos.home_repo.list_homes()
@@ -26,7 +26,7 @@ def get_homes(request) -> list[HomeWrite]:
     return homes
 
 
-def get_home(request, uuid: str) -> HomeWrite:
+def get_home(request, uuid: str) -> HomeCreate:
     try:
         repos = get_state_repos(request)
         home = repos.home_repo.get_home(uuid)
@@ -38,7 +38,7 @@ def get_home(request, uuid: str) -> HomeWrite:
 
     return home
 
-def update_home(request, uuid: str, home_update: HomeWrite) -> None:
+def update_home(request, uuid: str, home_update: HomeUpdate) -> None:
     try:
         repos = get_state_repos(request)
         repos.home_repo.update_home(uuid, home_update)

@@ -6,7 +6,7 @@ from uuid import uuid4
 from pymongo import MongoClient
 
 from interfaces.home_interface import HomeRepository
-from models.home_model import HomeWrite
+from models.home_model import HomeCreateDatabase, HomeUpdate
 from schemas.home_schema import list_home_serial, home_serial
 
 def check_uri(uri):
@@ -38,7 +38,7 @@ class HomeRepositoryMongo(HomeRepository):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
 
-    def create_home(self, home_create: HomeWrite) -> str:
+    def create_home(self, home_create: HomeCreateDatabase) -> str:
         home_data = home_create.model_dump()
         home_id = str(uuid4())
         home_data["_id"] = home_id
@@ -60,7 +60,7 @@ class HomeRepositoryMongo(HomeRepository):
         homes = list_home_serial(result)
         return homes
 
-    def update_home(self, uuid: str, home_update: HomeWrite) -> None:
+    def update_home(self, uuid: str, home_update: HomeUpdate) -> None:
         update_fields = home_update.model_dump()
         update_fields.pop('created_by', None)
         update_data = {"$set": update_fields}
